@@ -19,7 +19,8 @@ namespace deepntuples {
                             const pat::Jet &jet
                             );
 
-    const float track_pt() const { return track_pt_; }
+    const float track_i_pt() const { return track_i_pt_; }
+    const float track_t_pt() const { return track_t_pt_; }
     const float track_eta() const { return track_eta_; }
     const float track_phi() const { return track_phi_; }
     const float track_dz() const { return track_dz_; }
@@ -57,7 +58,8 @@ namespace deepntuples {
     const float pca_jetAxis_dPhi() const { return pca_jetAxis_dPhi_; }
 
   private:
-    float track_pt_;
+    float track_i_pt_;
+    float track_t_pt_;
     float track_eta_;
     float track_phi_;
     float track_dz_;

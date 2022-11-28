@@ -76,7 +76,7 @@ DeepNtuplizer::DeepNtuplizer(const edm::ParameterSet& iConfig):
   addModule(parts);
 
   TrackPairFiller *pairmatrix = new TrackPairFiller("", jetR);
-  //addModule(pairmatrix);
+  addModule(pairmatrix);
 
   // read config and init modules
   for(auto& m: modules_)

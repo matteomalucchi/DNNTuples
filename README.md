@@ -13,6 +13,14 @@ git clone git@github.com:hqucms/DNNTuples.git DeepNTuples -b ak4/UL/11_1_X
 scram b -j8
 ```
 
+
+## Run
+```bash
+voms-proxy-init -rfc -voms cms --valid 168:00
+cd $CMSSW_BASE/src/DeepNTuples/Ntupler/test/
+cmsRun DeepNtuplizerAK4Puppi.py
+```
+
 ## Submit jobs via CRAB
 
 **Step 0**: switch to the crab production directory and set up grid proxy, CRAB environment, etc.

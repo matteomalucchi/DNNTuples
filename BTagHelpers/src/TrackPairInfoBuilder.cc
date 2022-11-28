@@ -14,7 +14,8 @@ namespace deepntuples {
   TrackPairInfoBuilder::TrackPairInfoBuilder()
       :
 
-        track_pt_(0),
+        track_i_pt_(0),
+        track_t_pt_(0),
         track_eta_(0),
         track_phi_(0),
         track_dz_(0),
@@ -64,8 +65,8 @@ namespace deepntuples {
                                                 const reco::Vertex& pv,
                                                 const pat::Jet &jet
                                                 ) {
-      
-    GlobalVector jetdirection(jet.px(), jet.py(), jet.pz());  
+
+    GlobalVector jetdirection(jet.px(), jet.py(), jet.pz());
     GlobalPoint pvp(pv.x(), pv.y(), pv.z());
 
     VertexDistance3D distanceComputer;
@@ -106,7 +107,8 @@ namespace deepntuples {
       Line jetLine(pos, dir);
       Line PCAMomentumLine(cp, pairMomentumDir);
 
-//       track_pt_ = tt->track().pt();
+      track_t_pt_ = tt->track().pt();
+      track_i_pt_ = it->track().pt();
 //       track_eta_ = tt->track().eta();
 //       track_phi_ = tt->track().phi();
 //       track_dz_ = tt->track().dz(pv.position());
