@@ -17,7 +17,10 @@ scram b -j8
 ## Run
 ```bash
 voms-proxy-init -rfc -voms cms --valid 168:00
-cd $CMSSW_BASE/src/DeepNTuples/Ntupler/test/
+cd $CMSSW_BASE/src/
+cmsenv
+scram b -j24 # if change something the code must be compiled
+cd DeepNTuples/Ntupler/test/
 cmsRun DeepNtuplizerAK4Puppi.py
 ```
 

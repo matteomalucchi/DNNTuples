@@ -26,8 +26,8 @@ void TrackPairFiller::book() {
   data.addMulti<int>("track2_index");
 
 
-  data.add<int>("pt_1");
-  data.add<int>("pt_2");
+  data.addMulti<float>("pt_1");
+  data.addMulti<float>("pt_2");
 
 
   // pca (1 to 2)
@@ -109,18 +109,18 @@ bool TrackPairFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper& 
 
             int index2 = tt - selectedTracks.begin();
 
-            std::cout << index1 << index2 << std::endl;
-
+            //std::cout << index1 << index2 << std::endl;
+            if (index1!=index2 ){
             TrackPairInfoBuilder trkpairinfo;
             trkpairinfo.buildTrackPairInfo(&(*it),&(*tt),vertices->at(0),jet);
 
-            if (index1!=index2 && trkpairinfo.pca_distance()/trkpairinfo.pcaSeed_dist()<20){
+            if (trkpairinfo.pca_distance()/trkpairinfo.pcaSeed_dist()<20. && selectedTracks_pfidx[index1]<50 && selectedTracks_pfidx[index2]<50){
 
             data.fillMulti<int>("track1_index", selectedTracks_pfidx[index1]);
             data.fillMulti<int>("track2_index", selectedTracks_pfidx[index2]);
 
-            data.fillMulti<float>("pt_1", trkpairinfo.track_i_pt_());
-            data.fillMulti<float>("pt_2", trkpairinfo.track_t_pt_());
+            data.fillMulti<float>("pt_1", trkpairinfo.track_i_pt());
+            data.fillMulti<float>("pt_2", trkpairinfo.track_t_pt());
 
 
             data.fillMulti<float>("pca_distance", trkpairinfo.pca_distance());
@@ -163,6 +163,7 @@ bool TrackPairFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper& 
             data.fillMulti<float>("pca_jetAxis_dEta", trkpairinfo.pca_jetAxis_dEta());
             data.fillMulti<float>("pca_jetAxis_dPhi_", trkpairinfo.pca_jetAxis_dPhi());
 
+            }
             }
 
 
