@@ -7,3 +7,4 @@
 *.pyc
 __init__.py
 .DS_Store
+!files.txt

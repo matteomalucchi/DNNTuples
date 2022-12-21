@@ -4,12 +4,53 @@ import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('analysis')
 
-options.outputFile = 'prova.root'
+process.options.numberOfThreads=cms.untracked.uint32(32)
+process.options.numberOfStreams=cms.untracked.uint32(32)
+
+#options.outputFile = '/eos/home-m/mmalucch/dnntuple_output/output_tot_cutidx_cutpca_pt3.root'
+options.outputFile = '/scratchnvme/malucchi/output_tot_cutidx_cutpca_pt3.root'
+
+
 #options.inputFiles = '/store/mc/RunIISummer19UL17MiniAOD/BulkGravitonToHHTo4Q_MX-600to6000_MH-15to250_part2_TuneCP5_13TeV-madgraph_pythia8/MINIAODSIM/multigridpack_106X_mc2017_realistic_v6-v1/50000/FB46C2C2-73A4-A64C-A3D7-FC47C6A48871.root'
 # options.inputFiles = '/store/mc/RunIISummer19UL17MiniAOD/QCD_Pt-15to7000_TuneCP5_Flat_13TeV_pythia8/MINIAODSIM/106X_mc2017_realistic_v6_ext2-v2/60000/E0502E95-AA7E-B441-9277-498113BA458C.root'
 # options.inputFiles = '/store/mc/RunIISummer19UL17MiniAOD/TTToSemiLeptonic_mtop171p5_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v2/60000/F06BD23E-48AB-1F4D-A0FB-80DD370F4868.root'
 
-options.inputFiles = '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/0984A792-8B13-1543-AA86-063CC14B1678.root'
+'''options.inputFiles = ['/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/0984A792-8B13-1543-AA86-063CC14B1678.root',
+                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/1069D98E-0622-5642-BE60-EC3C8C9CF87D.root',
+                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/125C21CC-F228-6547-9A38-FC135A8D9764.root',
+                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/195947E9-1F3A-D84A-8ED8-34D7F38467D4.root',
+                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/1C772400-8C89-CB4E-93DC-463AE40E4EC1.root']
+
+options.inputFiles = ['/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/1CEEDB6C-987C-FE49-B96E-13FC35BF1558.root',
+                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/1FA712C2-D07D-5447-951D-D424992820C4.root',
+                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/29667DEB-8CD9-814F-B8EB-1C7A049A0E7A.root',
+                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/2ACB3396-DA76-444C-B65F-F79BE6732F58.root',
+                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/359158CA-4820-354F-BEF3-F8B1EA63A1B4.root',
+                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/3638C320-DA2B-A74F-A417-981BB01E852E.root',
+                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/36B941BB-9B5A-EA43-A8A2-77E3858B1B13.root']
+'''
+
+"""options.inputFiles = ['/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/49973BC0-3D16-EB4E-81E1-5CE4B1FFFA0F.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/4A170998-CF71-1941-AFF0-8DD32AED6B46.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/506DCAD2-574B-F24A-80A1-63E96711850E.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/5E52CEEA-3D4B-2342-8465-592D2BC0AD16.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/6930178C-2478-F743-B538-DD1BCF14592D.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/6B153BB1-B12D-D741-9D2B-6B48A8D69467.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/7FB4B911-32D3-6648-9B0E-B112B092492C.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/9739BF6A-D21B-A546-B8E9-216458C68831.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/9CB6344C-40BA-3146-B75A-2124D6C039BE.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/9D30A9AA-CF6E-EA45-81AF-F4571C09D431.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/9F4DD37F-2F34-3A49-B552-F0100162A7C2.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/AFF1A7DD-6B79-9A45-956C-D3385BC6EB63.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/B0FFB691-1562-224F-B8E8-1F98C8B5C78D.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/CF3A46EE-61A2-454B-A4CE-350A8920AAC5.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/F68CE2D2-F078-DB42-BC30-4D73566DB39D.root',
+                    '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/FBB49546-F1ED-EA4B-8F12-0466361B8404.root',
+]"""
+
+with open("files.txt", 'r') as f:
+    options.inputFiles = [line.strip() for line in f][-50:]
+    print(options.inputFiles)
 
 options.maxEvents = -1
 
