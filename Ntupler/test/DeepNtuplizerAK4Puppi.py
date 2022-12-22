@@ -4,8 +4,6 @@ import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('analysis')
 
-process.options.numberOfThreads=cms.untracked.uint32(32)
-process.options.numberOfStreams=cms.untracked.uint32(32)
 
 #options.outputFile = '/eos/home-m/mmalucch/dnntuple_output/output_tot_cutidx_cutpca_pt3.root'
 options.outputFile = '/scratchnvme/malucchi/output_tot_cutidx_cutpca_pt3.root'
@@ -76,6 +74,9 @@ for k in globalTagMap:
         era = k
 # ---------------------------------------------------------
 process = cms.Process("DNNFiller")
+
+process.options.numberOfThreads=cms.untracked.uint32(32)
+process.options.numberOfStreams=cms.untracked.uint32(32)
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
