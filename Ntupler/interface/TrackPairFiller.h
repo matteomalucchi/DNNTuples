@@ -6,6 +6,11 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/Common/interface/ValueMap.h"
+
+#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
+#include "DataFormats/Candidate/interface/Candidate.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+
 #include "DeepNTuples/NtupleCommons/interface/NtupleBase.h"
 
 namespace deepntuples {
@@ -34,6 +39,9 @@ private:
 
   edm::EDGetTokenT<reco::VertexCompositePtrCandidateCollection> svToken_;
   edm::Handle<reco::VertexCompositePtrCandidateCollection> SVs;
+
+  edm::EDGetTokenT<std::vector<pat::PackedGenParticle>> packedToken_;
+  edm::Handle<std::vector<pat::PackedGenParticle>> packed;
 
   edm::ESHandle<TransientTrackBuilder> builder_;
 };

@@ -15,13 +15,26 @@ namespace deepntuples {
 void PFCompleteFiller::readConfig(const edm::ParameterSet& iConfig, edm::ConsumesCollector&& cc) {
   vtxToken_ = cc.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
   svToken_ = cc.consumes<reco::VertexCompositePtrCandidateCollection>(iConfig.getParameter<edm::InputTag>("SVs"));
+  packedToken_ = cc.consumes<std::vector<pat::PackedGenParticle>>(iConfig.getParameter<edm::InputTag>("packed"));
+  prunedToken_ = cc.consumes<std::vector<reco::GenParticle>>(iConfig.getParameter<edm::InputTag>("pruned"));
 }
 
 void PFCompleteFiller::readEvent(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
   iEvent.getByToken(vtxToken_, vertices);
   iEvent.getByToken(svToken_, SVs);
+  iEvent.getByToken(packedToken_, packed);
+  iEvent.getByToken(prunedToken_, pruned);
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", builder_);
 }
+
+bool PFCompleteFiller::containParton(const reco::Candidate * pruned_part, int pdgid) {
+  if (abs(pruned_part->pdgId())==pdgid) return true;
+  for(size_t i=0;i< pruned_part->numberOfMothers();i++){
+    if (containParton(pruned_part->mother(i), pdgid)) return true;
+  }
+  return false;
+}
+
 
 void PFCompleteFiller::book() {
 
@@ -96,6 +109,16 @@ void PFCompleteFiller::book() {
   data.addMulti<float>("pfcand_btagJetDistVal");
   data.addMulti<float>("pfcand_btagDecayLengthVal");
   data.addMulti<float>("pfcand_btagDecayLengthSig");
+
+  data.addMulti<int>("pfcand_from_b");
+  data.addMulti<int>("pfcand_from_c");
+  data.addMulti<int>("pfcand_from_g");
+
+  data.addMulti<float>("pfcand_pv_x");
+  data.addMulti<float>("pfcand_pv_y");
+  data.addMulti<float>("pfcand_pv_z");
+
+  data.addMulti<float>("pfcand_dist_from_pv");
 
 }
 
@@ -215,9 +238,68 @@ bool PFCompleteFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper&
     data.fillMulti<float>("pfcand_btagJetDistVal", catchInfs(trkinfo.getTrackJetDistVal()));
     data.fillMulti<float>("pfcand_btagDecayLengthVal", catchInfs(trkinfo.getTrackDecayLengthVal()));
     data.fillMulti<float>("pfcand_btagDecayLengthSig", catchInfs(trkinfo.getTrackDecayLengthSig()));
+
+    int b_tag=-1, c_tag=-1, g_tag=-1;
+    float pv_x=-1,pv_y=-1,pv_z=-1, dist_from_pv=-1;
+    for(const auto &pruned_part : *pruned){
+      if(pruned_part.pdgId()!=2212) {
+        const auto pv = pruned_part.vertex();
+        pv_x= pv.x();
+        pv_y= pv.y();
+        pv_z= pv.z();
+
+        double dR_min=pow10(6);
+        double dpt_min=pow10(6);
+        int charge=-1;
+
+        for (const auto &packed_part : *packed){
+          double dR = reco::deltaR(*packed_cand, packed_part);
+          double dpt = std::abs((packed_cand->pt()- packed_part.pt())/packed_cand->pt());
+
+          if (dR<dR_min){
+            dR_min=dR;
+            dpt_min=dpt;
+            charge= (packed_cand->charge()==packed_part.charge()) ? 1: 0;
+          }
+          /*dR_min=std::min(dR, dR_min);
+          dpt_min=std::min(dpt, dpt_min);
+          charge= (packed_cand->charge()==packed_part.charge()) ? 1: 0;
+          */
+
+          // what if this condition is true for more than one packed_part?
+          if(dR<0.05 && dpt<0.1 && packed_cand->charge()==packed_part.charge()){
+
+            const reco::Candidate * pruned_part=packed_part.lastPrunedRef().get();
+            //const reco::Candidate * pruned_part=packed_part.mother(0);
+
+            /*if(containParton(pruned_part, 4)) c_tag=1;
+            if(containParton(pruned_part, 5)) b_tag=1;
+            if(containParton(pruned_part, 21)) g_tag=1;*/
+
+            c_tag=containParton(pruned_part, 4)? 1 : 0;
+            b_tag=containParton(pruned_part, 5)? 1 : 0;
+            g_tag=containParton(pruned_part, 21)? 1 : 0;
+
+            dist_from_pv= sqrt((pv- pruned_part->vertex()).mag2());
+
+            break;
+          }
+        }
+        std::cout << dR_min << "    "<<dpt_min <<"    "<<charge<<std::endl;
+
+        break;
+      }
+    }
+    data.fillMulti<int>("pfcand_from_b", b_tag);
+    data.fillMulti<int>("pfcand_from_c", c_tag);
+    data.fillMulti<int>("pfcand_from_g", g_tag);
+
+    data.fillMulti<float>("pfcand_pv_x", pv_x);
+    data.fillMulti<float>("pfcand_pv_y", pv_y);
+    data.fillMulti<float>("pfcand_pv_z", pv_z);
+
+    data.fillMulti<float>("pfcand_dist_from_pv", dist_from_pv);
   }
-
-
   return true;
 }
 

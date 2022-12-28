@@ -3,6 +3,8 @@ import FWCore.ParameterSet.Config as cms
 deepntuplizer = cms.EDAnalyzer('DeepNtuplizer',
                                 pfcands    = cms.InputTag("packedPFCandidates"),
                                 vertices   = cms.InputTag("offlineSlimmedPrimaryVertices"),
+                                packed   = cms.InputTag("packedGenParticles"),
+                                pruned   = cms.InputTag("prunedGenParticles"),
                                 puInfo     = cms.InputTag("slimmedAddPileupInfo"),
                                 rhoInfo    = cms.InputTag("fixedGridRhoFastjetAll"),
                                 jets       = cms.InputTag("slimmedJets"),

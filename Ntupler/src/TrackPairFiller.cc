@@ -9,11 +9,13 @@ namespace deepntuples {
 void TrackPairFiller::readConfig(const edm::ParameterSet& iConfig, edm::ConsumesCollector&& cc) {
   vtxToken_ = cc.consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertices"));
   svToken_ = cc.consumes<reco::VertexCompositePtrCandidateCollection>(iConfig.getParameter<edm::InputTag>("SVs"));
+  packedToken_ = cc.consumes<std::vector<pat::PackedGenParticle>>(iConfig.getParameter<edm::InputTag>("packed"));
 }
 
 void TrackPairFiller::readEvent(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
   iEvent.getByToken(vtxToken_, vertices);
   iEvent.getByToken(svToken_, SVs);
+  iEvent.getByToken(packedToken_, packed);
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", builder_);
 }
 
@@ -71,7 +73,7 @@ void TrackPairFiller::book() {
   data.addMulti<float>("pca_jetAxis_dEta");
   data.addMulti<float>("pca_jetAxis_dPhi_");
 
-
+  data.addMulti<int>("from_same_vtx");
 
 }
 
@@ -86,7 +88,7 @@ bool TrackPairFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper& 
   int counter = 0;
 
 
-   for (const auto& cand : pfCands){
+  for (const auto& cand : pfCands){
 
     //const auto *packed_cand = dynamic_cast<const pat::PackedCandidate *>(&(*cand));
 
@@ -98,19 +100,54 @@ bool TrackPairFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper& 
     }
     counter++;
 
+  }
+
+  // do a nested loop over pfcands and  associate it with the
+  // packed particles
+  for (const auto& cand1 : pfCands){
+    const auto *packed_cand1 = dynamic_cast<const pat::PackedCandidate *>(&(*cand1));
+
+    for (const auto &packed_part1 : *packed){
+      double dR = reco::deltaR(*packed_cand1, packed_part1);
+      double dpt = std::abs((packed_cand1->pt()- packed_part1.pt())/packed_cand1->pt());
+
+      if(dR<0.05 && dpt<0.1 && packed_cand1->charge()==packed_part1.charge()){
+
+        for (const auto& cand2 : pfCands){
+          const auto *packed_cand2 = dynamic_cast<const pat::PackedCandidate *>(&(*cand2));
+
+          //if (cand1 == cand2) continue;
+
+          for (const auto &packed_part2 : *packed){
+            double dR = reco::deltaR(*packed_cand2, packed_part2);
+            double dpt = std::abs((packed_cand2->pt()- packed_part2.pt())/packed_cand2->pt());
+
+            if(dR<0.05 && dpt<0.1 && packed_cand2->charge()==packed_part2.charge()){
+
+              const reco::Candidate * pruned_part1=packed_part1.lastPrunedRef().get();
+              const reco::Candidate * pruned_part2=packed_part2.lastPrunedRef().get();
+
+              double dist_vtx_12= sqrt((pruned_part1->vertex()- pruned_part2->vertex()).mag2());
+
+
+
+            }
+          }
+        }
+      }
     }
+  }
 
 
-    for(std::vector<reco::TransientTrack>::const_iterator it = selectedTracks.begin(); it != selectedTracks.end(); it++){
+  for(std::vector<reco::TransientTrack>::const_iterator it = selectedTracks.begin(); it != selectedTracks.end(); it++){
 
-        int index1 = it - selectedTracks.begin();
+      int index1 = it - selectedTracks.begin();
 
-        for(std::vector<reco::TransientTrack>::const_iterator tt = selectedTracks.begin(); tt != selectedTracks.end(); tt++){
+      for(std::vector<reco::TransientTrack>::const_iterator tt = selectedTracks.begin(); tt != selectedTracks.end(); tt++){
 
-            int index2 = tt - selectedTracks.begin();
+          int index2 = tt - selectedTracks.begin();
 
-            //std::cout << index1 << index2 << std::endl;
-            if (index1!=index2 ){
+          if (index1!=index2 ){
             TrackPairInfoBuilder trkpairinfo;
             trkpairinfo.buildTrackPairInfo(&(*it),&(*tt),vertices->at(0),jet);
 
@@ -163,14 +200,21 @@ bool TrackPairFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper& 
             data.fillMulti<float>("pca_jetAxis_dEta", trkpairinfo.pca_jetAxis_dEta());
             data.fillMulti<float>("pca_jetAxis_dPhi_", trkpairinfo.pca_jetAxis_dPhi());
 
+
+            /*for (const auto &packed_part : *packed){
+              double dR = reco::deltaR(*packed_cand, packed_part);
+              double dpt = std::abs((packed_cand->pt()- packed_part.pt())/packed_cand->pt());
+
+
+            }*/
             }
-            }
+          }
 
 
-        }
+      }
 
 
-    }
+  }
 
 
   return true;
