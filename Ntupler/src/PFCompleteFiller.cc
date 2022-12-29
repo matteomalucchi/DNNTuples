@@ -248,33 +248,16 @@ bool PFCompleteFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper&
         pv_y= pv.y();
         pv_z= pv.z();
 
-        double dR_min=pow10(6);
-        double dpt_min=pow10(6);
-        int charge=-1;
 
         for (const auto &packed_part : *packed){
           double dR = reco::deltaR(*packed_cand, packed_part);
           double dpt = std::abs((packed_cand->pt()- packed_part.pt())/packed_cand->pt());
 
-          if (dR<dR_min){
-            dR_min=dR;
-            dpt_min=dpt;
-            charge= (packed_cand->charge()==packed_part.charge()) ? 1: 0;
-          }
-          /*dR_min=std::min(dR, dR_min);
-          dpt_min=std::min(dpt, dpt_min);
-          charge= (packed_cand->charge()==packed_part.charge()) ? 1: 0;
-          */
-
           // what if this condition is true for more than one packed_part?
-          if(dR<0.05 && dpt<0.1 && packed_cand->charge()==packed_part.charge()){
+          if(dR<0.01 && dpt<0.1 && packed_cand->charge()==packed_part.charge()){
 
             const reco::Candidate * pruned_part=packed_part.lastPrunedRef().get();
             //const reco::Candidate * pruned_part=packed_part.mother(0);
-
-            /*if(containParton(pruned_part, 4)) c_tag=1;
-            if(containParton(pruned_part, 5)) b_tag=1;
-            if(containParton(pruned_part, 21)) g_tag=1;*/
 
             c_tag=containParton(pruned_part, 4)? 1 : 0;
             b_tag=containParton(pruned_part, 5)? 1 : 0;
@@ -285,7 +268,6 @@ bool PFCompleteFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper&
             break;
           }
         }
-        std::cout << dR_min << "    "<<dpt_min <<"    "<<charge<<std::endl;
 
         break;
       }

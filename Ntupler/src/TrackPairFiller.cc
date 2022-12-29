@@ -73,7 +73,9 @@ void TrackPairFiller::book() {
   data.addMulti<float>("pca_jetAxis_dEta");
   data.addMulti<float>("pca_jetAxis_dPhi_");
 
-  data.addMulti<int>("from_same_vtx");
+  data.addMulti<int>("index_pf1");
+  data.addMulti<int>("index_pf2");
+  data.addMulti<float>("dist_vtx_12");
 
 }
 
@@ -95,48 +97,49 @@ bool TrackPairFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper& 
     if (cand->bestTrack()){
         selectedTracks.push_back( builder_->build(cand) );
         selectedTracks_pfidx.push_back(counter);
-
-
     }
     counter++;
 
   }
 
-  // do a nested loop over pfcands and  associate it with the
-  // packed particles
-  for (const auto& cand1 : pfCands){
-    const auto *packed_cand1 = dynamic_cast<const pat::PackedCandidate *>(&(*cand1));
+  // for each possible pfCand pair save the distance between the vertices of the
+  // last pruned ancestors of each particle
+  for(std::vector<reco::CandidatePtr>::const_iterator it1 = pfCands.begin(); it1 != pfCands.end(); it1++){
+    int index1 = it1 - pfCands.begin();
+    const auto *packed_cand1 = dynamic_cast<const pat::PackedCandidate *>(&(*(*it1)));
 
-    for (const auto &packed_part1 : *packed){
-      double dR = reco::deltaR(*packed_cand1, packed_part1);
-      double dpt = std::abs((packed_cand1->pt()- packed_part1.pt())/packed_cand1->pt());
+    for(std::vector<reco::CandidatePtr>::const_iterator it2 = pfCands.begin(); it2 != pfCands.end(); it2++){
+      int index2 = it2 - pfCands.begin();
+      const auto *packed_cand2 = dynamic_cast<const pat::PackedCandidate *>(&(*(*it2)));
+      data.fillMulti<int>("index_pf1", index1);
+      data.fillMulti<int>("index_pf2", index2);
 
-      if(dR<0.05 && dpt<0.1 && packed_cand1->charge()==packed_part1.charge()){
-
-        for (const auto& cand2 : pfCands){
-          const auto *packed_cand2 = dynamic_cast<const pat::PackedCandidate *>(&(*cand2));
-
-          //if (cand1 == cand2) continue;
+      float dist_vtx_12 = -1;
+      for (const auto &packed_part1 : *packed){
+        double dR1 = reco::deltaR(*packed_cand1, packed_part1);
+        double dpt1 = std::abs((packed_cand1->pt()- packed_part1.pt())/packed_cand1->pt());
+        if(dR1<0.01 && dpt1<0.1 && packed_cand1->charge()==packed_part1.charge()){
 
           for (const auto &packed_part2 : *packed){
-            double dR = reco::deltaR(*packed_cand2, packed_part2);
-            double dpt = std::abs((packed_cand2->pt()- packed_part2.pt())/packed_cand2->pt());
-
-            if(dR<0.05 && dpt<0.1 && packed_cand2->charge()==packed_part2.charge()){
+            double dR2 = reco::deltaR(*packed_cand2, packed_part2);
+            double dpt2 = std::abs((packed_cand2->pt()- packed_part2.pt())/packed_cand2->pt());
+            if(dR2<0.01 && dpt2<0.1 && packed_cand2->charge()==packed_part2.charge()){
 
               const reco::Candidate * pruned_part1=packed_part1.lastPrunedRef().get();
               const reco::Candidate * pruned_part2=packed_part2.lastPrunedRef().get();
 
-              double dist_vtx_12= sqrt((pruned_part1->vertex()- pruned_part2->vertex()).mag2());
+              dist_vtx_12= sqrt((pruned_part1->vertex()- pruned_part2->vertex()).mag2());
 
-
-
+              break;
             }
           }
+          break;
         }
       }
+      data.fillMulti<float>("dist_vtx_12", dist_vtx_12);
     }
   }
+
 
 
   for(std::vector<reco::TransientTrack>::const_iterator it = selectedTracks.begin(); it != selectedTracks.end(); it++){

@@ -7,7 +7,7 @@ options = VarParsing('analysis')
 
 #options.outputFile = '/eos/home-m/mmalucch/dnntuple_output/output_tot_cutidx_cutpca_pt3.root'
 #options.outputFile = '/scratchnvme/malucchi/output_tot_cutidx_cutpca_pt4.root'
-options.outputFile = 'prova.root'
+options.outputFile = 'mother_all_dR0.01.root'
 
 '''options.inputFiles = ['/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/0984A792-8B13-1543-AA86-063CC14B1678.root',
                       '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/1069D98E-0622-5642-BE60-EC3C8C9CF87D.root',
@@ -27,6 +27,7 @@ options.inputFiles = ['/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV
 '''
 with open("files.txt", 'r') as f:
     options.inputFiles = [line.strip() for line in f][1]'''
+
 options.inputFiles ='file:/eos/home-m/mmalucch/0FB3AAB7-CFC2-034D-9779-6D4324FC3460.root'
 
 options.maxEvents = -1
