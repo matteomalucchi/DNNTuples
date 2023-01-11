@@ -114,9 +114,9 @@ void PFCompleteFiller::book() {
   data.addMulti<int>("pfcand_from_c");
   data.addMulti<int>("pfcand_from_g");
 
-  data.addMulti<float>("pfcand_pv_x");
-  data.addMulti<float>("pfcand_pv_y");
-  data.addMulti<float>("pfcand_pv_z");
+  data.addMulti<float>("pfcand_vtx_x");
+  data.addMulti<float>("pfcand_vtx_y");
+  data.addMulti<float>("pfcand_vtx_z");
 
   data.addMulti<float>("pfcand_dist_from_pv");
 
@@ -131,13 +131,13 @@ bool PFCompleteFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper&
 
   float etasign = jet.eta()>0 ? 1 : -1;
 
-  float pv_x=-1,pv_y=-1,pv_z=-1;
+  //float pv_x=-1,pv_y=-1,pv_z=-1;
   for(const auto &pruned_part : *pruned){
     if(pruned_part.pdgId()!=2212) {
       const auto pv = pruned_part.vertex();
-      pv_x= pv.x();
-      pv_y= pv.y();
-      pv_z= pv.z();
+      //pv_x= pv.x();
+      //pv_y= pv.y();
+      //pv_z= pv.z();
 
       for (const auto& cand : pfCands){
 
@@ -249,33 +249,42 @@ bool PFCompleteFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper&
 
         int b_tag=-1, c_tag=-1, g_tag=-1;
         float dist_from_pv=-1;
+        float vtx_x=0, vtx_y=0, vtx_z=0;
+
+        double dR_min=pow10(6);
+
+        const reco::Candidate * pruned_part_match=nullptr;
         for (const auto &packed_part : *packed){
           double dR = reco::deltaR(*packed_cand, packed_part);
           double dpt = std::abs((packed_cand->pt()- packed_part.pt())/packed_cand->pt());
 
-          // what if this condition is true for more than one packed_part?
           if(dR<0.01 && dpt<0.1 && packed_cand->charge()==packed_part.charge()){
-
-            const reco::Candidate * pruned_part=packed_part.lastPrunedRef().get();
-            //const reco::Candidate * pruned_part=packed_part.mother(0);
-
-            c_tag=containParton(pruned_part, 4)? 1 : 0;
-            b_tag=containParton(pruned_part, 5)? 1 : 0;
-            g_tag=containParton(pruned_part, 21)? 1 : 0;
-
-            dist_from_pv= sqrt((pv- pruned_part->vertex()).mag2());
-
-            break;
+            if (dR<dR_min) {
+              pruned_part_match=packed_part.lastPrunedRef().get();
+              //pruned_part_match=packed_part.mother(0);
+            }
           }
+        }
+
+        if (pruned_part_match != nullptr){
+          c_tag=containParton(pruned_part_match, 4)? 1 : 0;
+          b_tag=containParton(pruned_part_match, 5)? 1 : 0;
+          g_tag=containParton(pruned_part_match, 21)? 1 : 0;
+
+          dist_from_pv= sqrt((pv- pruned_part_match->vertex()).mag2());
+
+          vtx_x=pruned_part_match->vertex().x();
+          vtx_y=pruned_part_match->vertex().y();
+          vtx_z=pruned_part_match->vertex().z();
         }
 
         data.fillMulti<int>("pfcand_from_b", b_tag);
         data.fillMulti<int>("pfcand_from_c", c_tag);
         data.fillMulti<int>("pfcand_from_g", g_tag);
 
-        data.fillMulti<float>("pfcand_pv_x", pv_x);
-        data.fillMulti<float>("pfcand_pv_y", pv_y);
-        data.fillMulti<float>("pfcand_pv_z", pv_z);
+        data.fillMulti<float>("pfcand_vtx_x", vtx_x);
+        data.fillMulti<float>("pfcand_vtx_y", vtx_y);
+        data.fillMulti<float>("pfcand_vtx_z", vtx_z);
 
         data.fillMulti<float>("pfcand_dist_from_pv", dist_from_pv);
       }
