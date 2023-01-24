@@ -110,6 +110,7 @@ void PFCompleteFiller::book() {
   data.addMulti<float>("pfcand_btagDecayLengthVal");
   data.addMulti<float>("pfcand_btagDecayLengthSig");
 
+  // auxiliary labels
   data.addMulti<int>("pfcand_from_b");
   data.addMulti<int>("pfcand_from_c");
   data.addMulti<int>("pfcand_from_g");

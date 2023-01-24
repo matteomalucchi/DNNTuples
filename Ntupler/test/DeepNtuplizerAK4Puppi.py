@@ -5,28 +5,12 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing('analysis')
 
 
-#options.outputFile = '/eos/home-m/mmalucch/dnntuple_output/output_tot_cutidx_cutpca_pt3.root'
-options.outputFile = '/scratchnvme/malucchi/output_tot_new_labels_0_49.root'
-#options.outputFile = 'output_tot_new_labels.root'
+#options.outputFile = '/eos/home-m/mmalucch/dnntuple_output/output_new_ttjets.root'
+#options.outputFile = '/scratchnvme/malucchi/output_tot_new_labels_0_49.root'
+options.outputFile = 'output_10Mevents.root'
 
-'''options.inputFiles = ['/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/0984A792-8B13-1543-AA86-063CC14B1678.root',
-                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/1069D98E-0622-5642-BE60-EC3C8C9CF87D.root',
-                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/125C21CC-F228-6547-9A38-FC135A8D9764.root',
-                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/195947E9-1F3A-D84A-8ED8-34D7F38467D4.root',
-                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/1C772400-8C89-CB4E-93DC-463AE40E4EC1.root']
-
-options.inputFiles = ['/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/1CEEDB6C-987C-FE49-B96E-13FC35BF1558.root',
-                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/1FA712C2-D07D-5447-951D-D424992820C4.root',
-                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/29667DEB-8CD9-814F-B8EB-1C7A049A0E7A.root',
-                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/2ACB3396-DA76-444C-B65F-F79BE6732F58.root',
-                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/359158CA-4820-354F-BEF3-F8B1EA63A1B4.root',
-                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/3638C320-DA2B-A74F-A417-981BB01E852E.root',
-                      '/store/mc/RunIISummer20UL18MiniAODv2/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2430000/36B941BB-9B5A-EA43-A8A2-77E3858B1B13.root']
-'''
-
-
-with open("files.txt", 'r') as f:
-    options.inputFiles = [line.strip() for line in f][:50]
+#with open("../test/files_ttjets.txt", 'r') as f:
+#    options.inputFiles = [line.strip() for line in f][1]
 
 #options.inputFiles ='file:/eos/home-m/mmalucch/0FB3AAB7-CFC2-034D-9779-6D4324FC3460.root'
 
@@ -38,6 +22,8 @@ options.register('inputDataset',
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.string,
                  "Input dataset")
+
+#  inputDataset=/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM
 options.register('isTrainSample', True, VarParsing.multiplicity.singleton, VarParsing.varType.bool, "if the sample is used for training")
 
 options.parseArguments()
@@ -46,9 +32,10 @@ globalTagMap = {
     'Summer19UL17': '106X_mc2017_realistic_v6',
     'Summer19UL18': '106X_upgrade2018_realistic_v11_L1v1',
     'Summer19UL16': '',
+    'Summer20UL18': '106X_upgrade2018_realistic_v15_L1v1',
 }
 
-era = None if options.inputDataset else 'Summer19UL17'
+era = None if options.inputDataset else 'Summer20UL18'
 for k in globalTagMap:
     if k in options.inputDataset:
         era = k

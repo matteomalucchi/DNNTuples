@@ -40,6 +40,13 @@ source /cvmfs/cms.cern.ch/common/crab-setup.sh
 
 `python crab.py --set-input-dataset -p ../test/DeepNtuplizerAK4[CHS|Puppi].py --site T2_CH_CERN -o /store/user/$USER/DeepNtuples/[version] -t DeepNtuplesAK4-[version] --no-publication -i [ABC].conf -s FileBased -n 1 --work-area crab_projects_[ABC] --send-external [--input_files JEC.db] --dryrun`
 
+python crab.py -p ../test/DeepNtuplizerAK4Puppi.py -o /store/user/mmalucch/dnntuple_output/all/ -i ../test/datasets.conf --site T2_IT_Pisa/T2_IT_CNAF_Disk --work-area crab_projects_[] -n 10000000 --splitting Automatic
+
+python crab.py -p ../test/DeepNtuplizerAK4Puppi.py -o /store/user/mmalucch/dnntuple_output/big/ -i ../test/datasets.conf --site T2_IT_CNAF_Disk --work-area crab_projects_big -n 10000000 --splitting Automatic
+
+python crab.py -p ../test/DeepNtuplizerAK4Puppi.py -o /store/user/mmalucch/dnntuple_output/big/ -i ../test/datasets.conf --site T2_IT_CNAF_disk --work-area crab_projects_big -n 300 --splitting Automatic --max-units 10000000
+
+
 These command will perform a "dryrun" to print out the CRAB configuration files. Please check everything is correct (e.g., the output path, version number, requested number of cores, etc.) before submitting the actual jobs. To actually submit the jobs to CRAB, just remove the `--dryrun` option at the end.
 
 **[Note] For the QCD samples use `-n 1 --max-units 50` to run one file per job, and limit the total files per job to 50.**

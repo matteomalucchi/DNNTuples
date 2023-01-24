@@ -137,40 +137,6 @@ bool TrackPairFiller::fill(const pat::Jet& jet, size_t jetidx, const JetHelper& 
   }
 
 
-
-/*
-    for(std::vector<reco::CandidatePtr>::const_iterator it2 = pfCands.begin(); it2 != pfCands.end(); it2++){
-      int index2 = it2 - pfCands.begin();
-      const auto *packed_cand2 = dynamic_cast<const pat::PackedCandidate *>(&(*(*it2)));
-
-      data.fillMulti<int>("index_pf1", index1);
-      data.fillMulti<int>("index_pf2", index2);
-      float dist_vtx_12 = -1;
-
-      dR_min=pow10(6);
-
-      const reco::Candidate * pruned_part_match2=nullptr;
-      for (const auto &packed_part : *packed){
-        double dR = reco::deltaR(*packed_cand2, packed_part);
-        double dpt = std::abs((packed_cand2->pt()- packed_part.pt())/packed_cand2->pt());
-
-        if(dR<0.01 && dpt<0.1 && packed_cand2->charge()==packed_part.charge()){
-          if (dR<dR_min) {
-            pruned_part_match2=packed_part.lastPrunedRef().get();
-            //pruned_part_match2=packed_part.mother(0);
-          }
-        }
-      }
-
-      if (pruned_part_match1 != nullptr && pruned_part_match2 != nullptr){
-        dist_vtx_12= sqrt((pruned_part_match1->vertex()- pruned_part_match2->vertex()).mag2());
-      }
-      data.fillMulti<float>("dist_vtx_12", dist_vtx_12);
-    }
-  }
-*/
-
-
   for(std::vector<reco::TransientTrack>::const_iterator it = selectedTracks.begin(); it != selectedTracks.end(); it++){
 
       int index1 = it - selectedTracks.begin();

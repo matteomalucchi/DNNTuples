@@ -1,10 +1,11 @@
 *.*~
 *.log
-*.txt
+#*.txt
 *.out
 *.root
 #*.*#
 *.pyc
 __init__.py
 .DS_Store
-!files.txt
+crab*
+!crab.py
