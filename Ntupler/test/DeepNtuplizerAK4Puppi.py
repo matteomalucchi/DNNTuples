@@ -12,7 +12,7 @@ options.outputFile = 'output_10Mevents.root'
 #with open("../test/files_ttjets.txt", 'r') as f:
 #    options.inputFiles = [line.strip() for line in f][1]
 
-#options.inputFiles ='file:/eos/home-m/mmalucch/0FB3AAB7-CFC2-034D-9779-6D4324FC3460.root'
+options.inputFiles ='file:/eos/home-m/mmalucch/0FB3AAB7-CFC2-034D-9779-6D4324FC3460.root'
 
 options.maxEvents = -1
 
@@ -32,7 +32,11 @@ globalTagMap = {
     'Summer19UL17': '106X_mc2017_realistic_v6',
     'Summer19UL18': '106X_upgrade2018_realistic_v11_L1v1',
     'Summer19UL16': '',
-    'Summer20UL18': '106X_upgrade2018_realistic_v15_L1v1',
+    #'Summer20UL18': '106X_upgrade2018_realistic_v15_L1v1',
+    #'Summer20UL18': '106X_upgrade2018_realistic_v16_L1v1',
+    'Summer20UL18': '113X_upgrade2018_realistic_v5',
+    #'Summer20UL18': '112X_dataRun3_HLT_v3',
+    #'Summer20UL18': 'CMSSW_11_2_0_pre6-112X_upgrade2018_realistic_v3-v1',
 }
 
 era = None if options.inputDataset else 'Summer20UL18'
@@ -50,7 +54,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.options = cms.untracked.PSet(
     allowUnscheduled = cms.untracked.bool(True),
-    wantSummary=cms.untracked.bool(False)
+    wantSummary=cms.untracked.bool(True)
 )
 
 print ('Using output file ' + options.outputFile)
@@ -112,6 +116,8 @@ from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 isPuppiJets = True
 jetR = 0.4
 
+from RecoBTag.ONNXRuntime.pfParticleNetAK4_cff import _pfParticleNetAK4JetTagsAll as pfParticleNetAK4JetTagsAll
+
 bTagDiscriminators = [
     'pfDeepFlavourJetTags:probb',
     'pfDeepFlavourJetTags:probbb',
@@ -119,7 +125,15 @@ bTagDiscriminators = [
     'pfDeepFlavourJetTags:probc',
     'pfDeepFlavourJetTags:probuds',
     'pfDeepFlavourJetTags:probg',
-]
+    # 'pfParticleNetAK4JetTags:probb',
+    # 'pfParticleNetAK4JetTags:probbb',
+    # 'pfParticleNetAK4JetTags:probc',
+    # 'pfParticleNetAK4JetTags:probcc',
+    # 'pfParticleNetAK4JetTags:probuds',
+    # 'pfParticleNetAK4JetTags:probg',
+    # 'pfParticleNetAK4JetTags:probundef',
+    # 'pfParticleNetAK4JetTags:probpu',
+] + pfParticleNetAK4JetTagsAll
 
 JETCorrLevels = ['L2Relative', 'L3Absolute']
 

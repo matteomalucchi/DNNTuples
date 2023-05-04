@@ -46,6 +46,8 @@ python crab.py -p ../test/DeepNtuplizerAK4Puppi.py -o /store/user/mmalucch/dnntu
 
 python crab.py -p ../test/DeepNtuplizerAK4Puppi.py -o /store/user/mmalucch/dnntuple_output/big/ -i ../test/datasets.conf --site T1_IT_CNAF_Disk --work-area crab_projects_big -n 300 --splitting Automatic --max-units 10000000
 
+crab status -d crab_projects_big/crab_TTJe2s_TuneCP5_13TeV-madgraphMLM-pythia8-v2
+
 
 These command will perform a "dryrun" to print out the CRAB configuration files. Please check everything is correct (e.g., the output path, version number, requested number of cores, etc.) before submitting the actual jobs. To actually submit the jobs to CRAB, just remove the `--dryrun` option at the end.
 
